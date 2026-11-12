@@ -1,4 +1,4 @@
-# Out Soon
+# Coming to Theaters
 
 Upcoming movie releases screen for a portrait 4K classroom display (OptiSigns).
 
