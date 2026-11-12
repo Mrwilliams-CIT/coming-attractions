@@ -25,7 +25,7 @@
 [hidden]{display:none!important}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
   -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
-body{position:relative;height:100vh;font-family:"Newsreader",Georgia,serif}
+body{position:relative;height:100vh;display:flex;flex-direction:column;font-family:"Newsreader",Georgia,serif}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
 button:focus-visible{outline:.6rem solid var(--accent);outline-offset:.4rem}
 .disp{font-family:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;font-weight:900;
@@ -39,17 +39,17 @@ button:focus-visible{outline:.6rem solid var(--accent);outline-offset:.4rem}
 .scene::after{content:"";position:absolute;inset:0;
   background:linear-gradient(to bottom,rgba(0,0,0,.55) 0,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 48%,var(--bg) 100%)}
 
-.top{position:absolute;left:9rem;right:9rem;top:6rem;display:flex;justify-content:space-between;
+.top{position:relative;flex:none;padding:6rem 9rem 0;display:flex;justify-content:space-between;
   align-items:baseline;z-index:2;text-shadow:0 .3rem 1.5rem rgba(0,0,0,.6)}
 .top h1{font-size:9.5rem;letter-spacing:.01em}
 .top p{font-size:4.4rem;font-style:italic}
 
 /* Featured movie */
-.feature{position:absolute;left:0;right:0;top:136rem;bottom:63rem;padding:0 9rem;z-index:2;
-  display:grid;grid-template-columns:76rem minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);
-  column-gap:7rem;width:100%;align-content:start;transition:opacity .35s ease}
+.feature{position:relative;flex:1 1 auto;min-height:0;padding:4rem 9rem 4rem;z-index:2;
+  display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;
+  column-gap:7rem;width:100%;transition:opacity .35s ease}
 .feature.swap{opacity:0}
-.poster{width:76rem;height:114rem;background:#000;overflow:hidden;
+.poster{height:100%;max-height:114rem;aspect-ratio:2/3;align-self:end;background:#000;overflow:hidden;
   box-shadow:0 3rem 8rem rgba(0,0,0,.6);outline:.3rem solid rgba(255,255,255,.12)}
 .poster img{width:100%;height:100%;object-fit:cover;display:block}
 .poster .noart{display:flex;align-items:flex-end;height:100%;padding:4rem;font-size:10rem;color:var(--accent);overflow-wrap:anywhere}
@@ -58,7 +58,7 @@ button:focus-visible{outline:.6rem solid var(--accent);outline-offset:.4rem}
 .when .big{font-size:36rem;color:var(--accent);margin-top:1rem;white-space:nowrap;letter-spacing:-.01em}
 .when .big small{font-size:.38em;margin-left:1.5rem;letter-spacing:0}
 .when .date{font-size:6.4rem;font-weight:600;margin-top:2.5rem}
-.words{grid-column:1 / -1;padding-top:6rem;min-height:0;overflow:hidden}
+.words{grid-column:1 / -1;padding-top:5rem;min-width:0}
 .title{font-size:24rem;overflow-wrap:break-word}
 .meta{display:flex;flex-wrap:wrap;align-items:center;gap:1.5rem 4rem;margin-top:4rem;font-size:5rem;color:var(--mute)}
 .rating{display:inline-block;border:.5rem solid var(--ink);color:var(--ink);padding:1rem 2.2rem .6rem;font-size:6rem;line-height:1}
@@ -69,7 +69,7 @@ button:focus-visible{outline:.6rem solid var(--accent);outline-offset:.4rem}
 .more{font-size:4.2rem;font-style:italic;color:var(--mute);margin-top:2.5rem}
 
 /* Next up rail */
-.rail{position:absolute;left:0;right:0;bottom:0;height:61rem;padding:3rem 9rem 0;z-index:2;
+.rail{position:relative;flex:none;padding:3rem 9rem 2rem;z-index:2;
   background:linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,.35))}
 .rail h2{font-size:6rem;color:var(--mute);margin-bottom:2.6rem;letter-spacing:.02em}
 .strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2.4rem}
@@ -85,7 +85,7 @@ button:focus-visible{outline:.6rem solid var(--accent);outline-offset:.4rem}
 .pick[aria-current="true"] .d{color:var(--accent)}
 .pick[aria-current="true"] i.run{width:100%;transition:width var(--rot) linear}
 
-.foot{position:absolute;left:9rem;right:9rem;bottom:2.4rem;z-index:2;display:flex;justify-content:space-between;
+.foot{position:relative;flex:none;padding:0 9rem 2.4rem;z-index:2;display:flex;justify-content:space-between;
   font-size:2.4rem;color:rgba(244,239,230,.4)}
 
 /* Setup and error message */
@@ -113,7 +113,7 @@ dialog::backdrop{background:transparent}
   .scene{height:100%}
   .scene::after{background:linear-gradient(to right,var(--bg) 0,rgba(0,0,0,.55) 45%,rgba(0,0,0,.1) 75%),
     linear-gradient(to bottom,rgba(0,0,0,0) 55%,var(--bg) 100%)}
-  .feature{top:24rem;right:auto;width:190rem;bottom:63rem}
+  .feature{max-width:200rem}
 }
 @media (prefers-reduced-motion:reduce){
   .feature,.scene img,.pick .art{transition:none}
@@ -365,18 +365,19 @@ dialog::backdrop{background:transparent}
     $("blurb").textContent = short(f.overview) || "No description yet.";
     fitTitle(); fitBig(); fitBlurb();
   }
-  function fitBlurb() {
-    var bl = $("blurb"), more = bl.nextElementSibling;
-    bl.style.webkitLineClamp = 3; bl.style.display = "";
-    var room = $("feature").getBoundingClientRect().bottom - bl.getBoundingClientRect().top - more.offsetHeight - 2.5 * rem();
-    var lh = parseFloat(getComputedStyle(bl).lineHeight);
-    var lines = Math.min(3, Math.floor(room / lh));
-    if (lines < 1) bl.style.display = "none"; else bl.style.webkitLineClamp = lines;
-  }
   function fitBig() {
     var el = $("big"), size = 36;
     el.style.fontSize = size + "rem";
     while (size > 12 && el.scrollWidth > el.clientWidth + 1) { size -= 1; el.style.fontSize = size + "rem"; }
+  }
+  function fitBlurb() {
+    var bl = $("blurb"), feat = $("feature");
+    bl.style.display = ""; bl.style.webkitLineClamp = 3;
+    var lines = 3;
+    while (lines > 0 && $("poster").getBoundingClientRect().height < 60 * rem()) {
+      lines -= 1;
+      if (lines === 0) bl.style.display = "none"; else bl.style.webkitLineClamp = lines;
+    }
   }
   function noArt(title) {
     var s = document.createElement("span");
