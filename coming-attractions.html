@@ -363,7 +363,15 @@ dialog::backdrop{background:transparent}
     $("runtime").textContent = hours(f.runtime);
     $("title").textContent = f.title;
     $("blurb").textContent = short(f.overview) || "No description yet.";
-    fitTitle(); fitBig();
+    fitTitle(); fitBig(); fitBlurb();
+  }
+  function fitBlurb() {
+    var bl = $("blurb"), more = bl.nextElementSibling;
+    bl.style.webkitLineClamp = 3; bl.style.display = "";
+    var room = $("feature").getBoundingClientRect().bottom - bl.getBoundingClientRect().top - more.offsetHeight - 2.5 * rem();
+    var lh = parseFloat(getComputedStyle(bl).lineHeight);
+    var lines = Math.min(3, Math.floor(room / lh));
+    if (lines < 1) bl.style.display = "none"; else bl.style.webkitLineClamp = lines;
   }
   function fitBig() {
     var el = $("big"), size = 36;
@@ -455,7 +463,7 @@ dialog::backdrop{background:transparent}
   $("feature").addEventListener("click", openSheet);
   $("s-close").addEventListener("click", closeSheet);
   $("sheet").addEventListener("click", function (e) { if (e.target === $("sheet")) closeSheet(); });
-  window.addEventListener("resize", function () { if (films.length) { fitTitle(); fitBig(); } });
+  window.addEventListener("resize", function () { if (films.length) { fitTitle(); fitBig(); fitBlurb(); } });
 
   // ---------- Go ----------
   function refresh() {
