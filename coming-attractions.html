@@ -49,7 +49,7 @@ button:focus-visible{outline:.6rem solid var(--accent);outline-offset:.4rem}
   display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;
   column-gap:7rem;width:100%;transition:opacity .35s ease}
 .feature.swap{opacity:0}
-.poster{height:100%;max-height:114rem;aspect-ratio:2/3;align-self:end;background:#000;overflow:hidden;
+.poster{height:100%;max-height:132rem;aspect-ratio:2/3;align-self:end;background:#000;overflow:hidden;
   box-shadow:0 3rem 8rem rgba(0,0,0,.6);outline:.3rem solid rgba(255,255,255,.12)}
 .poster img{width:100%;height:100%;object-fit:cover;display:block}
 .poster .noart{display:flex;align-items:flex-end;height:100%;padding:4rem;font-size:10rem;color:var(--accent);overflow-wrap:anywhere}
@@ -66,7 +66,7 @@ button:focus-visible{outline:.6rem solid var(--accent);outline-offset:.4rem}
 .rating.nr{font-size:4.2rem;padding:1.4rem 2.2rem 1rem;border-color:var(--mute);color:var(--mute)}
 .blurb{font-size:5.6rem;line-height:1.38;margin-top:4rem;max-width:62ch;
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.more{font-size:4.2rem;font-style:italic;color:var(--mute);margin-top:2.5rem}
+.more{font-size:4.6rem;margin-top:3.5rem;font-style:italic;color:var(--mute);margin-top:2.5rem}
 
 /* Next up rail */
 .rail{position:relative;flex:none;padding:3rem 9rem 2rem;z-index:2;
@@ -139,8 +139,7 @@ dialog::backdrop{background:transparent}
   <div class="words">
     <h2 class="disp title" id="title"></h2>
     <div class="meta"><span class="disp rating" id="rating"></span><span id="genres"></span><span id="runtime"></span></div>
-    <p class="blurb" id="blurb"></p>
-    <p class="more">Tap for the full story</p>
+    <p class="more">Tap the poster for the story and cast</p>
   </div>
 </button>
 
@@ -362,22 +361,12 @@ dialog::backdrop{background:transparent}
     $("genres").textContent = f.genres.join(", ");
     $("runtime").textContent = hours(f.runtime);
     $("title").textContent = f.title;
-    $("blurb").textContent = short(f.overview) || "No description yet.";
-    fitTitle(); fitBig(); fitBlurb();
+    fitTitle(); fitBig();
   }
   function fitBig() {
     var el = $("big"), size = 36;
     el.style.fontSize = size + "rem";
     while (size > 12 && el.scrollWidth > el.clientWidth + 1) { size -= 1; el.style.fontSize = size + "rem"; }
-  }
-  function fitBlurb() {
-    var bl = $("blurb"), feat = $("feature");
-    bl.style.display = ""; bl.style.webkitLineClamp = 3;
-    var lines = 3;
-    while (lines > 0 && $("poster").getBoundingClientRect().height < 60 * rem()) {
-      lines -= 1;
-      if (lines === 0) bl.style.display = "none"; else bl.style.webkitLineClamp = lines;
-    }
   }
   function noArt(title) {
     var s = document.createElement("span");
@@ -464,7 +453,7 @@ dialog::backdrop{background:transparent}
   $("feature").addEventListener("click", openSheet);
   $("s-close").addEventListener("click", closeSheet);
   $("sheet").addEventListener("click", function (e) { if (e.target === $("sheet")) closeSheet(); });
-  window.addEventListener("resize", function () { if (films.length) { fitTitle(); fitBig(); fitBlurb(); } });
+  window.addEventListener("resize", function () { if (films.length) { fitTitle(); fitBig(); } });
 
   // ---------- Go ----------
   function refresh() {
